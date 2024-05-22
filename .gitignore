@@ -2,3 +2,4 @@
 .ipynb_checkpoints/
 workspace.ipynb
 __pycache__/
+venv/

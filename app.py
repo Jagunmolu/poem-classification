@@ -1,8 +1,10 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-from prediction import predict
-from models import model
+# import pandas as pd
+# import numpy as np
+# from prediction import predict
+# from models import model, confusion_matrix
+# from sklearn.metrics import ConfusionMatrixDisplay, classification_report
+from models import Models
 
 st.title("Classifying Poems")
 # st.markdown("Toy model to play to classify iris flowers into setosa, versicolor, virginica")
@@ -20,9 +22,22 @@ st.title("Classifying Poems")
 
 text = st.text_input("Enter the text to classify.")
 # text = st.text_area("Enter the text to classify.")
+choice = st.selectbox("Pick your preferred model.", ["random forest", "svm", "xgboost", "decision tree", "naive bayes multinomial", "naive bayes complement", "knn"])
+
+model = Models(choice)
+model.final_result()
 
 predict_button = st.button("Predict Poem Category")
 
 if predict_button:
-    result = model().predict([text])
+    result = model.clf.predict([text])
     st.text(result[0])
+    # st.pyplot(ConfusionMatrixDisplay(confusion_matrix()).plot())
+    # st.pyplot(confusion_matrix())
+    # st.write(confusion_matrix)
+    # confusion_matrix
+    st.image("temp.png")
+    st.code(model.metrics())
+    # st.text(model.metrics())
+    # st.metric(model.metrics())
+    
