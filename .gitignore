@@ -3,3 +3,4 @@
 workspace.ipynb
 __pycache__/
 venv/
+prediction.py
