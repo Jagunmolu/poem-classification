@@ -15,5 +15,10 @@ if predict_button:
     result = model.clf.predict([text])
     st.text(result[0])
     st.image("temp.png")
-    st.code(model.metrics())
+    # st.code(model.metrics())
+    # st.dataframe(model.metrics())
+    # st.dataframe(
+    #     classification_report(model.y_test, model.pred, target_names=model.clf.classes_, output_dict=True)
+    # )
+    st.dataframe(model.metrics())
     

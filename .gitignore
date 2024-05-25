@@ -4,3 +4,4 @@ workspace.ipynb
 __pycache__/
 venv/
 prediction.py
+temp.png

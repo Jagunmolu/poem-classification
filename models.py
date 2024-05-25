@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import string
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import FunctionTransformer
+from sklearn.preprocessing import FunctionTransformer, LabelEncoder
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import ConfusionMatrixDisplay, classification_report, confusion_matrix
@@ -49,7 +49,8 @@ class Models:
 
     def metrics(self):
         self.pred = self.clf.predict(self.X_test)
-        class_report = classification_report(self.y_test, self.pred)
+        classes = self.clf.classes_
+        class_report = pd.DataFrame(classification_report(self.y_test, self.pred, target_names=classes, output_dict=True)).transpose()
         return class_report
 
     def remove_punctuations(self, series):
