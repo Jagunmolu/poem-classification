@@ -35,7 +35,8 @@ class Models:
         elif self.model == "svm":
             self.clf = make_pipeline(FunctionTransformer(self.remove_punctuations), CountVectorizer(stop_words="english"), SVC(random_state=42))
         elif self.model == "xgboost":
-            self.clf = make_pipeline(FunctionTransformer(self.remove_punctuations), CountVectorizer(stop_words="english"), XGBClassifier())
+            # self.clf = make_pipeline(FunctionTransformer(self.remove_punctuations), CountVectorizer(stop_words="english"), XGBClassifier())
+            self.clf = make_pipeline(CountVectorizer(stop_words="english"), XGBClassifier())
         elif self.model == "decision tree":
             self.clf = make_pipeline(FunctionTransformer(self.remove_punctuations), CountVectorizer(stop_words="english"), DecisionTreeClassifier(random_state=42))
         elif self.model == "naive bayes multinomial":
@@ -44,13 +45,27 @@ class Models:
             self.clf = make_pipeline(FunctionTransformer(self.remove_punctuations), CountVectorizer(stop_words="english"), ComplementNB())
         elif self.model == "knn":
             self.clf = make_pipeline(FunctionTransformer(self.remove_punctuations), CountVectorizer(stop_words="english"), KNeighborsClassifier())
-        self.clf.fit(self.X_train, self.y_train)
-        print(f"{type(self.clf) = }")
+        if self.model != "xgboost":
+            self.clf.fit(self.X_train, self.y_train)
+        else:
+            self.clf.fit(self.X_train, self.xg_boost()[0])
+        # print(f"{type(self.clf) = }")
+
+    def xg_boost(self):
+        le = LabelEncoder()
+        y_train_lr = le.fit_transform(self.y_train)
+        y_test_lr = le.transform(self.y_test)
+        classes = le.classes_
+        print(f"{classes = }")
+        return y_train_lr, y_test_lr, classes
 
     def metrics(self):
         self.pred = self.clf.predict(self.X_test)
         classes = self.clf.classes_
-        class_report = pd.DataFrame(classification_report(self.y_test, self.pred, target_names=classes, output_dict=True)).transpose()
+        if self.model == "xgboost":
+            class_report = pd.DataFrame(classification_report(self.xg_boost()[1], self.pred, target_names=self.xg_boost()[2], output_dict=True)).transpose()
+        else:
+            class_report = pd.DataFrame(classification_report(self.y_test, self.pred, target_names=classes, output_dict=True)).transpose()
         return class_report
 
     def remove_punctuations(self, series):
@@ -60,8 +75,12 @@ class Models:
         return res
 
     def save_fig(self):
-        cm = confusion_matrix(self.y_test, self.pred)
-        display = ConfusionMatrixDisplay(cm, display_labels=self.clf.classes_).plot()
+        if self.model == "xgboost":
+            cm = confusion_matrix(self.xg_boost()[1], self.pred)
+            display = ConfusionMatrixDisplay(cm, display_labels=self.xg_boost()[2]).plot()
+        else:
+            cm = confusion_matrix(self.y_test, self.pred)
+            display = ConfusionMatrixDisplay(cm, display_labels=self.clf.classes_).plot()
         plt.savefig("temp.png")
 
     def final_result(self):

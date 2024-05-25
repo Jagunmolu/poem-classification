@@ -12,7 +12,11 @@ model.final_result()
 predict_button = st.button("Predict Poem Category")
 
 if predict_button:
-    result = model.clf.predict([text])
+    if choice != "xg_boost":
+        classes = model.xg_boost()[2]
+        result = classes[model.clf.predict([text])]
+    else:
+        result = model.clf.predict([text])
     st.text(result[0])
     st.image("temp.png")
     # st.code(model.metrics())
