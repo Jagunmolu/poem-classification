@@ -1,5 +1,6 @@
 import streamlit as st
 from models import Models
+import streamlit.components.v1 as components
 
 # col1, col2, col3 = st.columns(3)
 
@@ -31,10 +32,12 @@ if predict_button:
     # with col1:
     st.image("temp.png")
     
-    col1, col2, col3 = st.columns(3)
+    # col1, col2, col3 = st.columns(3)
     
     # with col2:
     st.dataframe(model.metrics())
+    # components.html('<div style="text-align: center"> st.dataframe(model.metrics()) </div>')
+    # <div style="text-align: center"> st.dataframe(model.metrics()) </div>
 
 # Solution provided by dataprofessor (https://discuss.streamlit.io/t/image-in-markdown/13274/10) modified by mze3e to center the image
 # img_to_bytes and img_to_html inspired from https://pmbaumgartner.github.io/streamlitopedia/sizing-and-images.html
